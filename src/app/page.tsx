@@ -111,7 +111,7 @@ export default function Home() {
             ref={scope}
             className={clsx(
               "absolute left-[88px] scale-95 w-20 h-20 border-2 border-gray-500 bg-white rounded-xl duration-100 hover:!scale-90 cursor-pointer",
-              id === current && "z-10 bg-gray-100"
+              id === current && "z-10 !bg-gray-100"
             )}
             onClick={() => setCurrent(id)}
           />
