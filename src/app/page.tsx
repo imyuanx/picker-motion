@@ -107,6 +107,7 @@ export default function Home() {
       >
         {ITEM_LIST.map(({ id, scope }) => (
           <motion.div
+            key={id}
             ref={scope}
             className={clsx(
               "absolute left-[88px] scale-95 w-20 h-20 border-2 border-gray-500 bg-white rounded-xl duration-100 hover:!scale-90 cursor-pointer",
