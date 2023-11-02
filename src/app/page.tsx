@@ -1,28 +1,33 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useAnimate } from "framer-motion";
 import clsx from "clsx";
 
-const containerWidth = 256;
-const itemWidth = 80;
-const containerCenter = containerWidth / 2 - itemWidth / 2;
-const position = {
+type ItemType = {
+  id: number;
+  name: string;
+};
+
+const CONTAINER_WIDTH = 256;
+const ITEM_WIDTH = 80;
+const CONTAINER_CENTER = CONTAINER_WIDTH / 2 - ITEM_WIDTH / 2;
+const POSITION = {
   init: {
     L: {
-      left: containerCenter - 30,
+      left: CONTAINER_CENTER - 30,
       top: -20,
       rotate: -16,
       scale: 0.75,
     },
     M: {
-      left: containerCenter,
+      left: CONTAINER_CENTER,
       top: 0,
       rotate: 0,
       scale: 1,
     },
     R: {
-      left: containerCenter + 30,
+      left: CONTAINER_CENTER + 30,
       top: -20,
       rotate: 16,
       scale: 0.75,
@@ -36,13 +41,13 @@ const position = {
       scale: 0.8,
     },
     M: {
-      left: containerCenter,
+      left: CONTAINER_CENTER,
       top: 0,
       rotate: 0,
       scale: 0.8,
     },
     R: {
-      left: containerWidth - itemWidth,
+      left: CONTAINER_WIDTH - ITEM_WIDTH,
       top: 0,
       rotate: 0,
       scale: 0.8,
@@ -50,11 +55,17 @@ const position = {
   },
 };
 
+function isLeft(itemList: ItemType[], id: number, current: number) {
+  return (
+    Math.min(
+      ...itemList.filter(({ id }) => id !== current).map(({ id }) => id)
+    ) === id
+  );
+}
+
 export default function Home() {
   const [count, setCount] = useState(0);
   const [current, setCurrent] = useState(1);
-  const containerRef = useRef(null);
-
   const [scopeA, animateA] = useAnimate();
   const [scopeB, animateB] = useAnimate();
   const [scopeC, animateC] = useAnimate();
@@ -65,14 +76,6 @@ export default function Home() {
     { id: 2, name: "C", scope: scopeC, animate: animateC },
   ];
 
-  function isLeft(id: number) {
-    return (
-      Math.min(
-        ...ITEM_LIST.filter(({ id }) => id !== current).map(({ id }) => id)
-      ) === id
-    );
-  }
-
   function onHoverStart() {
     animation("hover");
   }
@@ -82,8 +85,9 @@ export default function Home() {
 
   function animation(state: "init" | "hover") {
     ITEM_LIST.map(({ id, scope, animate }) => {
-      const flag = id === current ? "M" : isLeft(id) ? "L" : "R";
-      animate(scope.current, position[state][flag]);
+      const flag =
+        id === current ? "M" : isLeft(ITEM_LIST, id, current) ? "L" : "R";
+      animate(scope.current, POSITION[state][flag]);
     });
   }
 
@@ -99,7 +103,6 @@ export default function Home() {
   return (
     <main className="flex flex-col gap-28 min-h-screen justify-center items-center">
       <motion.div
-        ref={containerRef}
         className="flex items-center relative w-64 h-20"
         key={count}
         onHoverStart={onHoverStart}
